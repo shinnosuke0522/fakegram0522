@@ -40,4 +40,10 @@ return [
         ],
     ],
 
+    'github' => [
+        'client_id' => env('GITHUB_CLIENT_ID'),         // GitHubのClient ID
+        'client_secret' => env('GITHUB_CLIENT_SECRET'), // GitHubのClient Secret
+        'redirect' => '/login/github/callback',
+    ],
+
 ];
