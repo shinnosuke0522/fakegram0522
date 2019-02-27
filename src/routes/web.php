@@ -15,13 +15,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// for Default Authentication
+Auth::routes();
+
 // for github login
+Route::get('github', 'Github\GithubController@top');
+Route::post('github/issue', 'Github\GithubController@createIssue');
 Route::get('login/github', 'Auth\LoginController@redirectToProvider');
 Route::get('login/github/callback', 'Auth\LoginController@handleProviderCallback');
 
-Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/users', 'UserController@index');
+Route::get('/my_page', 'UserController@mypage');
+Route::get('/my_page/edit', 'Usercontroller@edit');
+
+
 
 
 

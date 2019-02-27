@@ -50,7 +50,7 @@ class LoginController extends Controller
      */
     public function redirectToProvider()
     {
-        return Socialite::driver('github')->redirect();
+        return Socialite::driver('github')->scopes(['read:user', 'public_repo'])->redirect(); 
     }
 
     /**
@@ -58,37 +58,33 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function handleProviderCallback()
-    {   
-        $githubUser = Socialite::driver('github')->stateless()->user();
-        $user = User::where(['email' => $githubUser->getEmail()])->first();
+    public function handleProviderCallback(Request $request)// 追加！
+    {
+        $github_user = Socialite::driver('github')->user();
+        $app_user = User::where(['email' => $github_user->getEmail()])->first();
 
-        if($user){
-            // the user has already account
-            Auth::login($user);
-            return redirect($this->redirectTo);
-
-        } else {
+        if(empty($app_user)){
             // if the user doesn't have account
+            $new_user = new User;
+            $new_user->email = $github_user->getEmail();
+            $new_user->provider_id = $github_user->getId();
 
-            // register the user's information
-            $newUser = new User;
-            $newUser->email = $githubUser->getEmail();
-            $newUser->provider_id = $githubUser->getId();
-
-            if(!$githubUser->name){
-                $newUser->name = $githubUser->getNickname();
+            if(!$github_user->name){
+                $new_user->name = $github_user->getNickname();
             }else{
-                $newUser->name = $githubUser->getName();
+                $new_user->name = $github_user->getName();
             }
 
-            $newUser->save();
-
-            // log in
-            Auth::login($newUser);
-            return redirect($this->redirectTo);
-            
+            $new_user->save();
+            Auth::login($new_user);
+        } else {
+            // if the user has already an account
+            Auth::login($app_user);
         }
+
+        $request->session()->put('github_token', $github_user->token);
         
+        return redirect('github');
     }
+ 
 }
