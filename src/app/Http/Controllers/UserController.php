@@ -61,8 +61,8 @@ class UserController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        dd($user);
-       
+        //dd($user->email);
+        return view('user.user_edit', ['user'=>$user]);
     }
 
     /**
@@ -72,9 +72,31 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        //validate the request
+        $this->validate($request, [
+            'name' => 'required|max:40',
+            'email' => 'required|max:70',
+            'file' => [
+                // アップロードされたファイルであること
+                'file',
+                // 画像ファイルであること
+                'image',
+                // MIMEタイプを指定
+                'mimes:jpeg,png',
+            ]
+        ]);
+        // update current user information
+        $currnet_user = Auth::user();
+        $currnet_user->name = $request->name;
+        $currnet_user->email = $request->email;
+
+        // save updated currnet user's informtaion
+        $currnet_user->save();
+        
+        // return view
+        return redirect('/home');
     }
 
     /**

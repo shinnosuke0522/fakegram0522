@@ -2,6 +2,6 @@
 
 @section('content')
     <div class="container">
-        <p>user_page works!</p>
+        <h2>user_page works!</h2>
     </div>
 @endsection
