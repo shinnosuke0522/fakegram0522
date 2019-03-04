@@ -175,6 +175,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // for cloudinary  
+        JD\Cloudder\CloudderServiceProvider::class,
+        // for Images
+        Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*
@@ -223,7 +227,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        // for cloudinary
+        'Cloudder' => JD\Cloudder\Facades\Cloudder::class,
+        // for Images
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

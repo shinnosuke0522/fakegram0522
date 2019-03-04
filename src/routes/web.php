@@ -28,8 +28,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/users', 'UserController@index');
 Route::get('/my_page', 'UserController@mypage');
-Route::get('/my_page/edit', 'Usercontroller@edit');
-
+Route::get('/my_page/edit', 'UserController@edit');
+//Route::get('/my_page/update', 'UserController@update');
+Route::put('/my_page/update', 'UserController@update');
 
 
 

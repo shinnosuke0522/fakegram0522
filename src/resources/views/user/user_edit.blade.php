@@ -19,23 +19,26 @@
                 @endif
 
                 {{-- User edit form --}}
-                <form method="post"  enctype='multipart/form-data'>
+                {{-- <form method="post" enctype='multipart/form-data'> --}}
+                <form method="post" action="{{url('/my_page/update')}}" enctype='multipart/form-data'>
                     @csrf
                     @method('PUT')
                     <div class="form-group">
                         <label for="edit_name"><h5>Name</h5></label>
-                        <input class="form-control" type="text" id="edit_name" value="{{$user->name}}">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input class="form-control" type="text"
+                            name="name" id="edit_name" value="{{$user->name}}">
                     </div>
 
                     <div class="form-group">
                         <label for="edit_mail"><h5>Email Address</h5></label>
-                        <input class="form-control" type="email" id="edit_mail" value="{{$user->email}}">
+                        <input class="form-control" type="email" 
+                            name="email" id="edit_mail" value="{{$user->email}}">
                     </div>
 
                     <div class="form-group">
                         <h5>Avater</h5>
-                        <input type="file" name="avatar" class="btn btn-sm">
+                        <input type="file" name="avater" class="btn btn-sm">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     </div>
 
                     <button type="submit" class="btn btn-lg btn-block btn-primary float-right mt-3">
@@ -45,6 +48,6 @@
                 </form>
             </div>
         </div>
-        
+
     </div>
 @endsection

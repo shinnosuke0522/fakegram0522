@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Auth;
 use App\User;
 use Illuminate\Http\Request;
+use JD\Cloudder\Facades\Cloudder;
+use Image;
 
 class UserController extends Controller
 {
@@ -74,11 +76,10 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        //validate the request
         $this->validate($request, [
             'name' => 'required|max:40',
             'email' => 'required|max:70',
-            'file' => [
+            'avater' => [
                 // アップロードされたファイルであること
                 'file',
                 // 画像ファイルであること
@@ -91,6 +92,33 @@ class UserController extends Controller
         $currnet_user = Auth::user();
         $currnet_user->name = $request->name;
         $currnet_user->email = $request->email;
+
+        // if avater is updated
+        $avater_url = "";
+        if($request->file('avater'))
+        {
+            // if current user has an avater image
+            if($currnet_user->avater)
+            {
+                $previous_url = $currnet_user->avater;
+                $elements_url = explode("/", $previous_url);
+                $pointer = count($elements_url) - 1;
+                $publicId = $elements_url[$pointer];
+                Cloudder::delete($publicId);
+            }
+
+            // set an new avater image  
+            $avater = $request->file('avater');
+            $name = time() . '.' . $avater->getClientOriginalExtension();
+            // resize selected image and save at 'uploads' folder in public
+            $avater_img = Image::make($avater->getRealPath())->resize(200,200);
+            $avater_img->save(public_path('/uploads/' . $name ));
+            // upload processed image and set url 
+            $avater_path = public_path('/uploads/' . $name );
+            Cloudder::upload($avater_path, null);
+            $avater_url = "http://res.cloudinary.com/denviv6mo/image/upload/" . Cloudder::getPublicId();
+            $currnet_user->avater = $avater_url;
+        }
 
         // save updated currnet user's informtaion
         $currnet_user->save();
@@ -109,4 +137,5 @@ class UserController extends Controller
     {
         //
     }
+
 }

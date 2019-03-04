@@ -15,6 +15,7 @@
                     @endif
 
                     You are logged in!
+                    <a type="button" class="btn" href="/my_page/edit">my page </a>
                 </div>
             </div>
         </div>
