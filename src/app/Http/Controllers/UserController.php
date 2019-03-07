@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\User;
+use App\Post;
+use App\Photo;
 use Illuminate\Http\Request;
-use JD\Cloudder\Facades\Cloudder;
 use Image;
 
 class UserController extends Controller
@@ -28,8 +29,14 @@ class UserController extends Controller
      */
     public function mypage()
     {
-        //$current_user = Auth::user();
-        return view('user.my_page');
+        $user = User::find(Auth::id());
+        $posts = $user->posts;
+        $photos = [];
+        foreach($posts as $post){
+            $photo = Photo::where('post_id',$post->id)->orderBy('created_at')->first();
+            $photos[] = $photo;
+        }
+        return view('user.my_page')->with('user', $user)->with('photos', $photos);
     }
 
     /**
@@ -51,7 +58,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::find($id);
+        $posts = $user->posts;
+        $photos = [];
+        foreach($posts as $post){
+            $photo = Photo::where('post_id', $post->id)->orderBy('created_at')->first();
+            $photos[] = $photo;
+        }
+        return view('user.user_page')->with('user', $user)->with('photos', $photos);
     }
 
     /**
@@ -79,47 +93,24 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required|max:40',
             'email' => 'required|max:70',
-            'avater' => [
-                // アップロードされたファイルであること
-                'file',
-                // 画像ファイルであること
-                'image',
-                // MIMEタイプを指定
-                'mimes:jpeg,png',
-            ]
+            'avater' => ['file', 'image', 'mimes:jpeg,png'],
         ]);
+        
         // update current user information
         $currnet_user = Auth::user();
         $currnet_user->name = $request->name;
         $currnet_user->email = $request->email;
 
         // if avater is updated
-        $avater_url = "";
         if($request->file('avater'))
         {
-            // if current user has an avater image
-            if($currnet_user->avater)
-            {
-                $previous_url = $currnet_user->avater;
-                $elements_url = explode("/", $previous_url);
-                $pointer = count($elements_url) - 1;
-                $publicId = $elements_url[$pointer];
-                Cloudder::delete($publicId);
-            }
-
-            // set an new avater image  
-            $avater = $request->file('avater');
-            $name = time() . '.' . $avater->getClientOriginalExtension();
-            // resize selected image and save at 'uploads' folder in public
-            $avater_img = Image::make($avater->getRealPath())->resize(200,200);
-            $avater_img->save(public_path('/uploads/' . $name ));
-            // upload processed image and set url 
-            $avater_path = public_path('/uploads/' . $name );
-            Cloudder::upload($avater_path, null);
-            $avater_url = "http://res.cloudinary.com/denviv6mo/image/upload/" . Cloudder::getPublicId();
-            $currnet_user->avater = $avater_url;
+            $name = time(). '.'.  $request->file('avater')->getClientOriginalExtension();
+            $avater = $request->file('avater')->getRealPath();
+            $image = Image::make($avater)->resize(80,80);
+            $image->save(public_path('/uploads/'. $name));
+            $avater = base64_encode(file_get_contents(public_path('/uploads/'. $name)));
+            $currnet_user->avater = $avater;
         }
-
         // save updated currnet user's informtaion
         $currnet_user->save();
         

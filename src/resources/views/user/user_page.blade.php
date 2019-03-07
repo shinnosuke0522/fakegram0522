@@ -2,6 +2,27 @@
 
 @section('content')
     <div class="container">
-        <h2>user_page works!</h2>
+
+        <div class="card mb-3">
+            <div class="row">
+                <div class="col-sm-2">
+                    @if($user->avater)
+                        <img src="data:image/jpg;base64,{{$user->avater}}" class="avater_img">
+                    @endif
+                </div>
+                <div class="col-sm-8" style="margin-top: 25px;">
+                    <h3>{{$user->name}}</h3>
+                </div>
+            </div>
+        </div>
+
+        @if($photos)
+            <h3 class="mb-1">Posts</h3>
+            @foreach ($photos as $photo)
+                <div class="card float-left">
+                    <img src="{{$photo->url}}">
+                </div>
+            @endforeach
+        @endif
     </div>
 @endsection

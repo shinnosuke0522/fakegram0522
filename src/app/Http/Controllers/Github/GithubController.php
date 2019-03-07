@@ -18,7 +18,7 @@ class GithubController extends Controller
             return redirect('login/github');
         }
 
-        return view('/home');
+        return redirect('/home');
     }
 
     public function createIssue(Request $request)

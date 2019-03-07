@@ -19,7 +19,6 @@
                 @endif
 
                 {{-- User edit form --}}
-                {{-- <form method="post" enctype='multipart/form-data'> --}}
                 <form method="post" action="{{url('/my_page/update')}}" enctype='multipart/form-data'>
                     @csrf
                     @method('PUT')
@@ -44,7 +43,6 @@
                     <button type="submit" class="btn btn-lg btn-block btn-primary float-right mt-3">
                         Update Profile
                      </button>  
-
                 </form>
             </div>
         </div>

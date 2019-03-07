@@ -11,12 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// for Default Authentication
-Auth::routes();
+Route::get('/', function () { return view('welcome');});
 
 // for github login
 Route::get('github', 'Github\GithubController@top');
@@ -24,14 +19,30 @@ Route::post('github/issue', 'Github\GithubController@createIssue');
 Route::get('login/github', 'Auth\LoginController@redirectToProvider');
 Route::get('login/github/callback', 'Auth\LoginController@handleProviderCallback');
 
-Route::get('/home', 'HomeController@index')->name('home');
+// for Default Authentication
+Auth::routes();
 
-Route::get('/users', 'UserController@index');
-Route::get('/my_page', 'UserController@mypage');
-Route::get('/my_page/edit', 'UserController@edit');
-//Route::get('/my_page/update', 'UserController@update');
-Route::put('/my_page/update', 'UserController@update');
+// user page
+Route::get('users/{id}', 'UserController@show');
 
+// only for Authenticated user
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/home', 'PostsController@index')->name('home');
+
+    Route::get('/my_page', 'UserController@mypage');
+    Route::get('/my_page/edit', 'UserController@edit');
+    Route::put('/my_page/update', 'UserController@update');
+
+    Route::get('post', 'PostsController@create');
+    Route::post('post/store', 'PostsController@store');
+
+    // Likes
+    Route::get('posts/{post_id}/likes/list', 'LikesController@show');
+    Route::post('posts/{post_id}/likes', 'LikesController@store');
+    Route::delete('posts/{post_id}/likes/delete', 'LikesController@delete');
+        
+});
 
 
 
