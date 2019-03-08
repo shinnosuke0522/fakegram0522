@@ -32,11 +32,13 @@ class UserController extends Controller
         $user = User::find(Auth::id());
         $posts = $user->posts;
         $photos = [];
+        $sum_count = 0;
         foreach($posts as $post){
+            $sum_count += $post->likes_count;
             $photo = Photo::where('post_id',$post->id)->orderBy('created_at')->first();
             $photos[] = $photo;
         }
-        return view('user.my_page')->with('user', $user)->with('photos', $photos);
+        return view('user.my_page')->with('user', $user)->with('photos', $photos)->with('sum_count', $sum_count);
     }
 
     /**
@@ -61,11 +63,14 @@ class UserController extends Controller
         $user = User::find($id);
         $posts = $user->posts;
         $photos = [];
+        $sum_count = 0;
         foreach($posts as $post){
+            $sum_count += $post->likes_count;
             $photo = Photo::where('post_id', $post->id)->orderBy('created_at')->first();
             $photos[] = $photo;
         }
-        return view('user.user_page')->with('user', $user)->with('photos', $photos);
+        //dd($sum_count);
+        return view('user.user_page')->with('user', $user)->with('photos', $photos)->with('sum_count', $sum_count);
     }
 
     /**

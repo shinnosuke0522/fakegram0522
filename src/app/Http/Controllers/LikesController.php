@@ -22,6 +22,10 @@ class LikesController extends Controller
         $new_like->post_id = $post_id;
         $new_like->save();
 
+        $post = Post::find($post_id);
+        $post->likes_count += 1;
+        $post->save(); 
+
         return redirect('home');
     }
 
@@ -29,6 +33,9 @@ class LikesController extends Controller
     {
         $like = Like::where('u_id', Auth::id())->where('post_id', $post_id)->first();
         $like->delete();
+        $post = Post::find($post_id);
+        $post->likes_count -= 1;
+        $post->save(); 
         return redirect('home');
     }
 }

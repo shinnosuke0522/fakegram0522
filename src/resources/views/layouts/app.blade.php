@@ -11,6 +11,8 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -105,5 +107,16 @@
             @yield('content')
         </main>
     </div>
+
+    <script>
+        $('#likesModal').on('show.bs.modal', function (event) {
+            console.log('hello');
+            var button = $(event.relatedTarget);
+            var likes = button.data('post');
+            var modal = $(this);
+            modal.find('.modal-title').text('Like: ' + string(likes[likes_count]));
+            modal.find('.modal-body').val(likes);
+        });
+    </script>
 </body>
 </html>

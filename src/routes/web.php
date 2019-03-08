@@ -25,10 +25,12 @@ Auth::routes();
 // user page
 Route::get('users/{id}', 'UserController@show');
 
+Route::get('/home', 'PostsController@index')->name('home');
+
 // only for Authenticated user
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('/home', 'PostsController@index')->name('home');
+    
 
     Route::get('/my_page', 'UserController@mypage');
     Route::get('/my_page/edit', 'UserController@edit');

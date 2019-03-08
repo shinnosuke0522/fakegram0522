@@ -10,8 +10,11 @@
                         <img src="data:image/jpg;base64,{{$user->avater}}" class="avater_img">
                     @endif
                 </div>
-                <div class="col-sm-8" style="margin-top: 25px;">
+                <div class="col-sm-6" style="margin-top: 25px;">
                     <h3>{{$user->name}}</h3>
+                </div>
+                <div class="col-sm-4">
+                    <h3 style="margin-top: 25px;"><strong>Like: </strong>{{$sum_count}}</h3>
                 </div>
             </div>
         </div>
@@ -20,7 +23,7 @@
             <h3 class="mb-1">Posts</h3>
             @foreach ($photos as $photo)
                 <div class="card float-left">
-                    <img src="{{$photo->url}}">
+                    <img src="{{$photo->url}}" height="350" width="350">
                 </div>
             @endforeach
         @endif

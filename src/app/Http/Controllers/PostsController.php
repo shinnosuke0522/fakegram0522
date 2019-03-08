@@ -19,14 +19,14 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $data = Post::orderBy('id', 'desc')->get();
+        $posts = Post::orderBy('id', 'desc')->paginate(10);
         $ids = [];
         $likes = Like::where('u_id', Auth::id())->get();
         foreach($likes as $like)
         {
             $ids[] = $like->post_id;
         }
-        return view('home')->with('data', $data)->with('ids', $ids);
+        return view('home')->with('posts', $posts)->with('ids', $ids);
     }
 
     /**

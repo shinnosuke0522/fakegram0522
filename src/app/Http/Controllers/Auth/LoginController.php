@@ -69,10 +69,18 @@ class LoginController extends Controller
             $new_user->email = $github_user->getEmail();
             $new_user->provider_id = $github_user->getId();
 
+            // set user name
             if(!$github_user->name){
                 $new_user->name = $github_user->getNickname();
             }else{
                 $new_user->name = $github_user->getName();
+            }
+            
+            // set avater(avatar)
+            if($github_user->getAvatar()){
+                $url = $github_user->getAvatar();
+                $avater = base64_encode(file_get_contents($url));
+                $new_user->avater = $avater; 
             }
 
             $new_user->save();
